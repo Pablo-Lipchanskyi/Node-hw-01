@@ -37,16 +37,17 @@ const removeContact = async (contactId) => {
 const addContact = async (name, email, phone) => {
     try {
         const buffer = await fs.readFile(contactsPath);
-        const lists = JSON.parse(buffer);
+        const lists = JSON.parse(buffer.toString());
         const newContact = {
             id:uuidv4(),
-            name,
-            email,
-            phone
+            ...name,
+            ...email,
+            ...phone
         };
         lists.push(newContact)
-        await fs.writeFile(contactsPath, JSON.stringify(lists))
+        await fs.writeFile(contatsPath, JSON.stringify(lists))
         return newContact
+        console.log(newContact)
     } catch (err) {
         console.log(err)
     }
