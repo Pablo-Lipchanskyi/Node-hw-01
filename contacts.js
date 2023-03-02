@@ -6,47 +6,52 @@ const contactsPath = path.join('db', 'contacts.json');
 
 const listContacts = async () => {
     try { 
-        
-        const buffer = await fs.readFile(contactsPath);
-        const lists = JSON.parse(buffer.toString());
+        const buffer = await fs.readFile(contactsPath, "utf-8");
+        const lists = JSON.parse(buffer);
         console.table(lists);
+        return lists
     } catch (err) {
         console.log(err.message)
     }
 }
 const getContactByID = async (contactId) => {
     try{
-        const buffer = await fs.readFile(contactsPath);
-        const lists = JSON.parse(buffer.toString());
-        const contact = lists.filter( list => list.id === contactId.toString())
-        console.log(contact)
+        const lists = await listContacts()
+        const contact = lists.filter( list => list.id === contactId)
+        console.table(contact)
+        if (!contact) {
+            return null
+        }
+        return contact
     } catch (err) {
         console.log(err.message)
     }
 }
 const removeContact = async (contactId) => {
     try {
-        const buffer = await fs.readFile(contactsPath);
-        const lists = JSON.parse(buffer.toString());
-        const removedContact = lists.filter( list => list.id !== contactId.toString())
-        console.log(removedContact)
+        const lists = await listContacts()
+        const updateContact = lists.filter(list => list.id !== contactId)
+        await fs.writeFile(contactsPath, JSON.stringify(updateContact), "utf8");
+        await listContacts()
+        console.log(updateContact)
     } catch (err) {
         console.log(err.message)
     }
 }
 const addContact = async (name, email, phone) => {
     try {
-        const buffer = await fs.readFile(contactsPath);
-        const lists = JSON.parse(buffer.toString());
-        const newContact = {
-            id:uuidv4(),
-            ...name,
-            ...email,
-            ...phone
-        };
-        lists.push(newContact)
-        await fs.writeFile(contactsPath, JSON.stringify(lists))
-        return newContact
+        const lists = await listContacts()
+        const newContact = [
+            ...lists,
+            {
+            id: uuidv4().toString(),
+            name,
+            email,
+            phone
+            }
+        ];
+        await fs.writeFile(contactsPath, JSON.stringify(newContact), "utf-8")
+        await listContacts()
         console.log(newContact)
     } catch (err) {
         console.log(err)
