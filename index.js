@@ -15,7 +15,7 @@ program
     .option("-p, --phone <type>", "user phone");
 
 program.parse(process.argv);
-const arg = program.opts;
+const arg = program.opts();
 
 function callAction({ action, id, name, email,phone }) {
     switch (action) {
