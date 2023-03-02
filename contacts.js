@@ -9,7 +9,7 @@ const listContacts = async () => {
         
         const buffer = await fs.readFile(contactsPath);
         const lists = JSON.parse(buffer.toString());
-        console.log(lists);
+        console.table(lists);
     } catch (err) {
         console.log(err.message)
     }
@@ -45,7 +45,7 @@ const addContact = async (name, email, phone) => {
             ...phone
         };
         lists.push(newContact)
-        await fs.writeFile(contatsPath, JSON.stringify(lists))
+        await fs.writeFile(contactsPath, JSON.stringify(lists))
         return newContact
         console.log(newContact)
     } catch (err) {
